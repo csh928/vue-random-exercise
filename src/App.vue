@@ -14,6 +14,7 @@
           />
           <input
             type="checkbox"
+            @click="selectCheck($event)"
             :value="alphabet[num - 1]"
             v-model="answerCheck"
             v-else
@@ -65,11 +66,27 @@ export default {
     createRandomNum() {
       this.randomNum = Math.floor(Math.random() * this.total) + 1;
     },
-    confirm: function() {
-      console.log(this.exercises);
+    selectCheck(e) {
+      if (this.exercises[0].answer.length <= this.answerCheck.length) {
+        e.preventDefault();
+      }
+    },
+    confirm() {
       console.log(this.exercises[0].answer);
       console.log(this.answerCheck);
-      if (this.exercises[0].answer == this.answerCheck) {
+      let correctYn = true;
+
+      if (this.answerCheck.length > 1) {
+        this.answerCheck.forEach(answer => {
+          if (this.exercises[0].answer.indexOf(answer) <= -1) {
+            correctYn = false;
+          }
+        });
+      } else {
+        correctYn = this.exercises[0].answer == this.answerCheck ? true : false;
+      }
+
+      if (correctYn) {
         alert("맞다!");
       } else {
         alert("틀리다.");
