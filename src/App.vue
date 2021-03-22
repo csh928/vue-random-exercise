@@ -1,35 +1,32 @@
 <template>
   <div id="app">
-    <div :key="index" v-for="(exercise, index) in exercises">
-      <div class="qustion">Q.{{ index + 1 }} {{ exercise.question }}</div>
-      <div>{{ answerCheck }}</div>
-      <ul>
-        <li :key="ind" v-for="(num, ind) in exercise.cases.length">
-          {{ alphabet[num - 1] }}
-          <input
-            type="radio"
-            :value="alphabet[num - 1]"
-            v-if="exercise.answer.length == 1"
-            v-model="answerCheck"
-          />
-          <input
-            type="checkbox"
-            @click="selectCheck($event)"
-            :value="alphabet[num - 1]"
-            v-model="answerCheck"
-            v-else
-          />
+    <div class="qustion">Q. {{ exercises.question }}</div>
+    <div>{{ answerCheck }}</div>
+    <ul>
+      <li :key="ind" v-for="(num, ind) in exercises.cases.length">
+        {{ alphabet[num - 1] }}
+        <input
+          type="radio"
+          :value="alphabet[num - 1]"
+          v-if="exercises.answer.length == 1"
+          v-model="answerCheck"
+        />
+        <input
+          type="checkbox"
+          :value="alphabet[num - 1]"
+          v-model="answerCheck"
+          v-else
+        />
 
-          {{ exercise.cases[num - 1] }}
-        </li>
-      </ul>
-      <div v-if="fetch.solve">
-        <div>Answer: {{ exercise.answer }}</div>
-        <div>explanation: {{ exercise.explanation }}</div>
-        <div>reference: {{ exercise.reference }}</div>
-      </div>
-      // {{ exercise.answer }} //
+        {{ exercises.cases[num - 1] }}
+      </li>
+    </ul>
+    <div v-if="fetch.solve">
+      <div>Answer: {{ exercises.answer }}</div>
+      <div>explanation: {{ exercises.explanation }}</div>
+      <div>reference: {{ exercises.reference }}</div>
     </div>
+    // {{ exercises.answer }} //
     <div>
       {{ total }}, {{ randomNum }}<br /><input
         type="button"
@@ -60,30 +57,27 @@ export default {
   },
   created() {
     this.createRandomNum();
-    this.exercises = Exercises.filter(v => v.number == this.randomNum);
+    //this.exercises = Exercises.filter(v => v.number == this.randomNum);
+    this.exercises = Exercises[this.randomNum];
+    console.log(this.exercises);
   },
   methods: {
     createRandomNum() {
       this.randomNum = Math.floor(Math.random() * this.total) + 1;
     },
-    selectCheck(e) {
-      if (this.exercises[0].answer.length <= this.answerCheck.length) {
-        e.preventDefault();
-      }
-    },
     confirm() {
-      console.log(this.exercises[0].answer);
+      console.log(this.exercises.answer);
       console.log(this.answerCheck);
       let correctYn = true;
 
       if (this.answerCheck.length > 1) {
         this.answerCheck.forEach(answer => {
-          if (this.exercises[0].answer.indexOf(answer) <= -1) {
+          if (this.exercises.answer.indexOf(answer) <= -1) {
             correctYn = false;
           }
         });
       } else {
-        correctYn = this.exercises[0].answer == this.answerCheck ? true : false;
+        correctYn = this.exercises.answer == this.answerCheck ? true : false;
       }
 
       if (correctYn) {
