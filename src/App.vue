@@ -1,28 +1,42 @@
 <template>
   <div id="app">
-    <template v-for="(exercise, index) in exercises">
-      <div>Q.{{ index + 1 }} {{ exercise.question }}</div>
+    <div :key="index" v-for="(exercise, index) in exercises">
+      <div class="qustion">Q.{{ index + 1 }} {{ exercise.question }}</div>
+      <div>{{ answerCheck }}</div>
       <ul>
-        <li v-for="num in exercise.cases.length">
+        <li :key="ind" v-for="(num, ind) in exercise.cases.length">
+          {{ alphabet[num - 1] }}
           <input
-            :name="'exercise' + index"
             type="radio"
-            :value="num"
+            :value="alphabet[num - 1]"
             v-if="exercise.answer.length == 1"
+            v-model="answerCheck"
           />
           <input
-            :name="'exercise' + index"
             type="checkbox"
-            :value="num"
+            :value="alphabet[num - 1]"
+            v-model="answerCheck"
             v-else
           />
 
           {{ exercise.cases[num - 1] }}
         </li>
       </ul>
-      <div>Answer: {{ exercise.answer }}</div>
-    </template>
-    {{ total }}, {{ randomNum }}
+      <div v-if="fetch.solve">
+        <div>Answer: {{ exercise.answer }}</div>
+        <div>explanation: {{ exercise.explanation }}</div>
+        <div>reference: {{ exercise.reference }}</div>
+      </div>
+      // {{ exercise.answer }} //
+    </div>
+    <div>
+      {{ total }}, {{ randomNum }}<br /><input
+        type="button"
+        name="confirm"
+        value="확인"
+        @click="confirm()"
+      />
+    </div>
   </div>
 </template>
 
@@ -33,9 +47,14 @@ export default {
   name: "app",
   data() {
     return {
+      fetch: {
+        solve: false
+      },
+      answerCheck: [],
       exercises: null,
       total: Exercises.length,
-      randomNum: 0
+      randomNum: 0,
+      alphabet: ["A", "B", "C", "D", "E", "F", "G"]
     };
   },
   created() {
@@ -45,6 +64,16 @@ export default {
   methods: {
     createRandomNum() {
       this.randomNum = Math.floor(Math.random() * this.total) + 1;
+    },
+    confirm: function() {
+      console.log(this.exercises);
+      console.log(this.exercises[0].answer);
+      console.log(this.answerCheck);
+      if (this.exercises[0].answer == this.answerCheck) {
+        alert("맞다!");
+      } else {
+        alert("틀리다.");
+      }
     }
   }
 };
