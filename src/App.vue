@@ -4,7 +4,6 @@
     <div>{{ answerCheck }}</div>
     <ul>
       <li :key="ind" v-for="(num, ind) in exercises.cases.length">
-        {{ alphabet[num - 1] }}
         <input
           type="radio"
           :value="alphabet[num - 1]"
@@ -18,6 +17,7 @@
           v-else
         />
 
+        {{ alphabet[num - 1] }}
         {{ exercises.cases[num - 1] }}
       </li>
     </ul>
@@ -35,6 +35,7 @@
         @click="confirm()"
       />
     </div>
+    푼거:{{ solveExercises }}
   </div>
 </template>
 
@@ -52,7 +53,8 @@ export default {
       exercises: null,
       total: Exercises.length,
       randomNum: 0,
-      alphabet: ["A", "B", "C", "D", "E", "F", "G"]
+      alphabet: ["A", "B", "C", "D", "E", "F", "G"],
+      solveExercises: []
     };
   },
   created() {
@@ -66,8 +68,6 @@ export default {
       this.randomNum = Math.floor(Math.random() * this.total) + 1;
     },
     confirm() {
-      console.log(this.exercises.answer);
-      console.log(this.answerCheck);
       let correctYn = true;
 
       if (this.answerCheck.length > 1) {
@@ -85,6 +85,13 @@ export default {
       } else {
         alert("틀리다.");
       }
+      this.solveExercises.push(this.exercises.number);
+      //this.exercises = Exercises[this.randomNum];
+      this.createRandomNum();
+
+      console.log(
+        Exercises.filter(v => this.solveExercises.indexOf(v.number) <= -1)
+      );
     }
   }
 };
